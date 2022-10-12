@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import './App.css'
 import axios from 'axios';
-import GoogleMapReact from 'google-map-react';
 
 
 
