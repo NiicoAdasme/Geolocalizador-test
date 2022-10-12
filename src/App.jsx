@@ -2,53 +2,73 @@ import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import './App.css'
 import axios from 'axios';
-// require('dotenv').config()
-// import dotenv from 'dotenv';
 
-// dotenv.config();
 
 function App() {
 
-  const apiKey = import.meta.env.VITE_REACT_APP_API_KEY;
+  // const apiKey = import.meta.env.VITE_REACT_APP_API_KEY;
 
-  const src = `https://www.googleapis.com/geolocation/v1/geolocate?key=${apiKey}`;
+  // const src = `https://www.googleapis.com/geolocation/v1/geolocate?key=${apiKey}`;
 
-  const [coords, setCoords] = useState({
-    location: {
-      lat: 0,
-      lng: 0
-    },
-    accurancy: 0
-  });
+  // const [coords, setCoords] = useState({
+  //   location: {
+  //     lat: 0,
+  //     lng: 0
+  //   },
+  //   accurancy: 0
+  // });
+
+  // useEffect(() => {
+
+  //   axios.post(src)
+  //   .then(function (response) {
+  //     // handle success
+  //     // console.log(response.data);
+  //     const { location, accurancy } = response.data;
+  //     // console.log(location);
+  //     if (location) {
+  //       const { lat, lng } = location;
+
+  //       setCoords({
+  //         location: {
+  //           lat,
+  //           lng
+  //         },
+  //         accurancy
+  //       })
+  //     }
+  //   })
+  //   .catch(function (error) {
+  //     // handle error
+  //     throw new error;
+  //   })
+
+
+  // }, [])
 
   useEffect(() => {
-    
-    axios.post(src)
-    .then(function (response) {
-      // handle success
-      // console.log(response.data);
-      const { location, accurancy } = response.data;
-      // console.log(location);
-      if (location) {
-        const { lat, lng } = location;
-
-        setCoords({
-          location: {
-            lat,
-            lng
-          },
-          accurancy
-        })
-      }
-    })
-    .catch(function (error) {
-      // handle error
-      throw new error;
-    })
   
+    getLocation();
     
   }, [])
   
+
+  function getLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(showPosition);
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
+  }
+
+  function showPosition(position) {
+    // x.innerHTML = "Latitude: " + position.coords.latitude +
+    //   "<br>Longitude: " + position.coords.longitude;
+    const latitude  = position.coords.latitude;
+    const longitude = position.coords.longitude;
+    console.log(`Latitude: ${latitude} | Longitude: ${longitude}`);
+
+  }
 
   return (
     <div className="App">
@@ -63,10 +83,12 @@ function App() {
       <h1>Geolocalizador</h1>
 
 
-      <p>Latitude: {coords?.location?.lat}</p>
+      {/* <p>Latitude: {coords?.location?.lat}</p>
       <p>Longitude: {coords?.location?.lng}</p>
-      <p>Accurrancy: {coords?.accurancy}</p>
+      <p>Accurrancy: {coords?.accurancy}</p> */}
 
+      <p>Latitude: {latitude} </p>
+      <p>Longitude: {longitude} </p>
 
 
 
