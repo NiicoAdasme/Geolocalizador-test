@@ -45,13 +45,8 @@ function App() {
 
 
   // }, [])
-
-  useEffect(() => {
   
-    getLocation();
-    
-  }, [])
-  
+  const [coords, setCoords] = useState({latitude: '', longitude: ''})
 
   function getLocation() {
     if (navigator.geolocation) {
@@ -66,6 +61,10 @@ function App() {
     //   "<br>Longitude: " + position.coords.longitude;
     const latitude  = position.coords.latitude;
     const longitude = position.coords.longitude;
+    setCoords({
+      latitude,
+      longitude
+    })
     console.log(`Latitude: ${latitude} | Longitude: ${longitude}`);
 
   }
@@ -87,10 +86,11 @@ function App() {
       <p>Longitude: {coords?.location?.lng}</p>
       <p>Accurrancy: {coords?.accurancy}</p> */}
 
-      <p>Latitude: {latitude} </p>
-      <p>Longitude: {longitude} </p>
+      <button
+        onClick={getLocation}
+      >Get Coords</button>
 
-
+      <p>Latitude: {coords.latitude} </p>  <p>Longitude: {coords.longitude} </p>
 
     </div>
   )
