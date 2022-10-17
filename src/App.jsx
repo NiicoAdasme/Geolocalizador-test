@@ -1,68 +1,27 @@
 import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import './App.css'
-import axios from 'axios';
-// import { Wrapper, Status } from "@googlemaps/react-wrapper";
-// import { MyMapComponent } from './MyMapComponent';
+
+import { Wrapper, Status } from "@googlemaps/react-wrapper";
+import { Spinner } from './components/Spinner';
+import { ErrorComponent } from './components/ErrorComponent';
+import { MyMapComponent } from './components/MyMapComponent';
 
 
+export default function App() {
 
-function App() {
+  const render = (status) => {
+    switch (status) {
+      case Status.LOADING:
+        return <Spinner />;
+      case Status.FAILURE:
+        return <ErrorComponent />;
+    }
+  };
 
-  const apiKey = import.meta.env.VITE_REACT_APP_API_KEY;
+  const center = { lat: -34.397, lng: 150.644 };
+  const zoom = 4;
 
-  const src = `https://www.googleapis.com/geolocation/v1/geolocate?key=${apiKey}`;
-
-  const [coords, setCoords] = useState({
-    location: {
-      lat: 0,
-      lng: 0
-    },
-    accurancy: 0
-  });
-
-
-  // const YourComponent = () => <h1>Hello World</h1>
-
-  // const ref = useRef(null);
-  // const [map, setMap] = useState();
-
-  useEffect(() => {
-
-    axios.post(src)
-      .then(function (response) {
-        // handle success
-        // console.log(response.data);
-        const { location, accurancy } = response.data;
-        // console.log(location);
-        if (location) {
-          const { lat, lng } = location;
-
-          setCoords({
-            location: {
-              lat,
-              lng
-            },
-            accurancy
-          })
-        }
-      })
-      .catch(function (error) {
-        // handle error
-        throw new error;
-      })
-
-    getLocation();
-    // Maps
-    // if (ref.current && !map) {
-    //   setMap(new window.google.maps.Map(ref.current, {}));
-    // }
-
-
-  }, [])
-  // [ref, map])
-
-  // html geo api code
   const [coord, setCoord] = useState({ latitude: '', longitude: '' })
 
   function getLocation() {
@@ -80,28 +39,13 @@ function App() {
       latitude,
       longitude
     })
-    console.log(`Latitude: ${latitude} | Longitude: ${longitude}`);
-
   }
-  //    end html geo api code
 
-  // const center = {
-  //   lat: -34.397, lng: 150.644
-  // };
+  useEffect(() => {
 
-  // const zoom = 4;
+    getLocation();
 
-  // const render = (status) => {
-  //   switch (status) {
-  //     case Status.LOADING:
-  //       return <h1>Loading...</h1>;
-  //     case Status.FAILURE:
-  //       return <h1>Error!</h1>;
-  //     case Status.SUCCESS:
-  //       return <MyMapComponent center={center} zoom={zoom} />;
-  //   };
-  // }
-
+  }, [])
 
   return (
     <div className="App">
@@ -113,28 +57,18 @@ function App() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      <h1>Google Maps Geolocation API</h1>
-
-
-      <p>Latitude: {coords?.location?.lat}</p>
-      <p>Longitude: {coords?.location?.lng}</p>
-      <p>Accurrancy: {coords?.accurancy}</p>
-
-      {/* <Wrapper apiKey={apiKey} render={render}/> */}
-
 
       <h1>HTML Geolocation API</h1>
 
-      {/* <button
-        onClick={getLocation}
-      >Get Coords</button> */}
-
       <p>Latitude: {coord.latitude} </p>  <p>Longitude: {coord.longitude} </p>
 
+      {/* <Wrapper apiKey={import.meta.env.VITE_REACT_APP_API_KEY} render={render} /> */}
 
+      <Wrapper apiKey={import.meta.env.VITE_REACT_APP_API_KEY} render={render}>
+        <MyMapComponent center={center} zoom={zoom} />
+      </Wrapper>
 
     </div>
   )
 }
 
-export default App
