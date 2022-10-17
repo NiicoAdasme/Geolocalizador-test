@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import './App.css'
 import axios from 'axios';
+import { Wrapper, Status } from "@googlemaps/react-wrapper";
+import { MyMapComponent } from './MyMapComponent';
 
 
 
@@ -19,6 +21,12 @@ function App() {
     accurancy: 0
   });
 
+  
+
+  const YourComponent = () => <h1>Hello World</h1>
+
+  const ref = useRef(null);
+  const [map, setMap] = useState();
 
   useEffect(() => {
 
@@ -45,8 +53,13 @@ function App() {
         throw new error;
       })
 
+    // Maps
+    if (ref.current && !map) {
+      setMap(new window.google.maps.Map(ref.current, {}));
+    }
 
-  }, [])
+
+  }, [ref, map])
 
   // html geo api code
   const [coord, setCoord] = useState({ latitude: '', longitude: '' })
@@ -71,16 +84,22 @@ function App() {
   }
   //    end html geo api code
 
-  const AnyReactComponent = ({ text }) => <div>{text}</div>;
-
-  const defaultProps = {
-    center: {
-      lat: 0,
-      lng: 0
-    },
-    zoom: 4
+  const center = {
+    lat: -34.397, lng: 150.644
   };
 
+  const zoom = 4;
+
+  const render = (status) => {
+    switch (status) {
+      case Status.LOADING:
+        return <h1>Loading...</h1>;
+      case Status.FAILURE:
+        return <h1>Error!</h1>;
+      case Status.SUCCESS:
+        return <MyMapComponent center={center} zoom={zoom} />;
+    };
+  }
 
 
   return (
@@ -99,6 +118,8 @@ function App() {
       <p>Latitude: {coords?.location?.lat}</p>
       <p>Longitude: {coords?.location?.lng}</p>
       <p>Accurrancy: {coords?.accurancy}</p>
+
+      <Wrapper apiKey={apiKey} render={render}/>
 
 
       <h1>HTML Geolocation API</h1>
