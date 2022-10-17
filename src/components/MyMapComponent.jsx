@@ -9,7 +9,7 @@ export const MyMapComponent = ({center, zoom}) => {
             center,
             zoom,
         });
-    });
+    }, []);
 
     return <div ref={ref} id="map" />;
 }
