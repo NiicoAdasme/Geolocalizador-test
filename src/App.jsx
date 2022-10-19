@@ -35,7 +35,7 @@ export default function App() {
         longitude
       })
       console.log(`primer registro`);
-      setDisplayText(`primer registro`)
+      setDisplayText(`ingresando primer registro...`)
     } else {
       // * segundo registro, por primera vez
       if (newCoords.latitude === null || newCoords.longitude === null) {
@@ -44,7 +44,7 @@ export default function App() {
           longitude
         })
         console.log(`segundo registro`);
-        setDisplayText(`segundo registro`)
+        setDisplayText(`ingresando segundo registro...`)
       } else {
         // ? Nuevo registro (actualizacion del segundo registroy)
         setNewCoords({
@@ -56,14 +56,14 @@ export default function App() {
         //  Si las coordenadas son iguales. No hay movimiento
         if (coord.latitude === newCoords.latitude && coord.longitude === newCoords.longitude) {
           console.log('quieto');
-          setDisplayText(`quieto`)
+          setDisplayText(`quieto :(`)
           // si esta quieto. hay que saber cuanto tiempo lleva detenido. Si lleva mas de 1 min detenido
           // se envia una alerta para saber si esta bien el conductor
           // Algun mecanismo de validacion rapido para identificar que es el conductor y no otra persona 
           setCoord(newCoords)
         } else {
           console.log('en movimiento');
-          setDisplayText(`en movimiento`)
+          setDisplayText(`en movimiento :D`)
           // intercambio de coordenadas entre el primer y segundo registro
           setCoord(newCoords)
         }
@@ -91,7 +91,7 @@ export default function App() {
         </a>
       </div>
 
-      <h1>HTML Geolocation API</h1>
+      <h1>Geolocation API</h1>
 
       <button
         onClick={handleStart}
