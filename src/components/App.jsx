@@ -1,7 +1,5 @@
 import { useState } from 'react'
-import './App.css'
-
-
+import '../assets/App.css';
 
 export default function App() {
 
