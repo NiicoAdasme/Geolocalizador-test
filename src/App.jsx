@@ -49,6 +49,7 @@ export default function App() {
         console.log(`segundo registro`);
         setDisplayText(`segundo registro`)
       } else {
+        // Nuevo registro (actualizacion)
         setNewCoords({
           latitude,
           longitude
@@ -62,28 +63,25 @@ export default function App() {
           // se envia una alerta para saber si esta bien el conductor
           // Algun mecanismo de validacion rapido para identificar que es el conductor y no otra persona 
           setCoord(newCoords)
-          setNewCoords({
-            ...newCoords
-          })
+          // setNewCoords({
+          //   ...newCoords
+          // })
         } else {
           console.log('en movimiento');
           setDisplayText(`en movimiento`)
           // intercambio de coordenadas entre el primer y segundo registro
           setCoord(newCoords)
-          setNewCoords({
-            ...newCoords
-          })
+          // setNewCoords({
+          //   ...newCoords
+          // })
         }
       }
     }
   }
-  
 
   const handleStart = () => {
-
     setStartTrip(true);
     getLocation();
-
   }
 
   if(startTrip){
