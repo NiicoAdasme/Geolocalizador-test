@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import './App.css'
 
 
@@ -16,7 +16,7 @@ export default function App() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(showPosition);
     } else {
-      alert("Geolocation is not supported by this browser.");
+      alert("Geolocation is not supported by this browser."); // ! Debe activar la geolocalizacion
     }
   }
 
@@ -24,14 +24,11 @@ export default function App() {
     const latitude = position.coords.latitude;
     const longitude = position.coords.longitude;
 
-    // setCoord({
-    //   latitude,
-    //   longitude
-    // })
+    // ! Comienzo del monitoreo
     console.log(`recibiendo coordenadas...`);
     setDisplayText(`recibiendo coordenadas...`)
 
-    // Primer registro de coordenadas por primera vez
+    // * Primer registro de coordenadas, por primera vez
     if (coord.latitude === null || coord.longitude === null) {
       setCoord({
         latitude,
@@ -40,7 +37,7 @@ export default function App() {
       console.log(`primer registro`);
       setDisplayText(`primer registro`)
     } else {
-      // segundo registro, por primera vez
+      // * segundo registro, por primera vez
       if (newCoords.latitude === null || newCoords.longitude === null) {
         setNewCoords({
           latitude,
@@ -49,13 +46,14 @@ export default function App() {
         console.log(`segundo registro`);
         setDisplayText(`segundo registro`)
       } else {
-        // Nuevo registro (actualizacion)
+        // ? Nuevo registro (actualizacion del segundo registroy)
         setNewCoords({
           latitude,
           longitude
-        });
-        // intercambio de coordenadas entre el primer y segundo registro
-        // Si las coordenadas son iguales. No hay movimiento
+        })
+
+        //  intercambio de coordenadas entre el primer y segundo registro
+        //  Si las coordenadas son iguales. No hay movimiento
         if (coord.latitude === newCoords.latitude && coord.longitude === newCoords.longitude) {
           console.log('quieto');
           setDisplayText(`quieto`)
@@ -63,20 +61,15 @@ export default function App() {
           // se envia una alerta para saber si esta bien el conductor
           // Algun mecanismo de validacion rapido para identificar que es el conductor y no otra persona 
           setCoord(newCoords)
-          // setNewCoords({
-          //   ...newCoords
-          // })
         } else {
           console.log('en movimiento');
           setDisplayText(`en movimiento`)
           // intercambio de coordenadas entre el primer y segundo registro
           setCoord(newCoords)
-          // setNewCoords({
-          //   ...newCoords
-          // })
         }
       }
     }
+    // ! Fin del monitoreo
   }
 
   const handleStart = () => {
@@ -84,7 +77,7 @@ export default function App() {
     getLocation();
   }
 
-  if(startTrip){
+  if (startTrip) {
     setTimeout(() => {
       getLocation()
     }, 3000);
@@ -112,7 +105,8 @@ export default function App() {
       <h2>Segundo Registro</h2>
       <p>Latitude: {newCoords.latitude} </p>  <p>Longitude: {newCoords.longitude} </p>
 
-      <h3><b>{ displayText.toUpperCase() }</b></h3>
+      <h3><b>{displayText.toUpperCase()}</b></h3>
+
     </div>
   )
 }
