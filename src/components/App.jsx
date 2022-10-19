@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import '../assets/App.css';
 
+
 export default function App() {
 
   const [startTrip, setStartTrip] = useState(false)
@@ -59,6 +60,7 @@ export default function App() {
           // se envia una alerta para saber si esta bien el conductor
           // Algun mecanismo de validacion rapido para identificar que es el conductor y no otra persona 
           setCoord(newCoords)
+
         } else {
           console.log('en movimiento');
           setDisplayText(`en movimiento :D`)
@@ -70,15 +72,24 @@ export default function App() {
     // ! Fin del monitoreo
   }
 
+
+  // Inicio del viaje 
   const handleStart = () => {
     setStartTrip(true);
     getLocation();
   }
 
+  // ? se necesita el id del timer para poder deterlo en el handleStop
   if (startTrip) {
-    setTimeout(() => {
-      getLocation()
+    const timerId = setTimeout(() => {
+      getLocation();
     }, 3000);
+  }
+
+
+  // Termino del viaje
+  const handleStop = () => {
+    setStartTrip(false);
   }
 
   return (
@@ -91,11 +102,12 @@ export default function App() {
 
       <h1>Geolocation API</h1>
 
-      <button
-        onClick={handleStart}
-      >
-        Iniciar
-      </button>
+      {
+        (!startTrip) ?
+          <button onClick={handleStart}>Iniciar</button>
+        :
+          <button onClick={handleStop}>Detener</button>
+      }
 
       <h2>Primer Registro</h2>
       <p>Latitude: {coord.latitude} </p>  <p>Longitude: {coord.longitude} </p>
