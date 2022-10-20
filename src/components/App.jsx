@@ -4,12 +4,30 @@ import '../assets/App.css';
 
 export default function App() {
 
-  const [startTrip, setStartTrip] = useState(false)
+  const [startTrip, setStartTrip] = useState(false);
 
-  const [displayText, setDisplayText] = useState('')
+  const [watchID, setWatchID] = useState();
 
-  const [coord, setCoord] = useState({ latitude: null, longitude: null })
-  const [newCoords, setNewCoords] = useState({ latitude: null, longitude: null });
+  const [reqCount, setReqCount] = useState(0);
+
+  const [displayText, setDisplayText] = useState('');
+
+  const [coord, setCoord] = useState({
+    latitude: null,
+    longitude: null,
+    accuracy: null,
+    altitude: null,
+    heading: null,
+    speed: null
+  })
+  const [newCoords, setNewCoords] = useState({
+    latitude: null,
+    longitude: null,
+    accuracy: null,
+    altitude: null,
+    heading: null,
+    speed: null
+  });
 
   const getLocation = () => {
     if (navigator.geolocation) {
@@ -19,9 +37,45 @@ export default function App() {
     }
   }
 
+  const watchPosition = () => {
+    if (navigator.geolocation) {
+      const watchId = navigator.geolocation.watchPosition(showPosition, ErrorCallback, options)
+      setWatchID(watchId);
+    } else {
+      alert(`Geolocation is not supported by this browser`); // ! You must activate the geolocation
+    }
+  }
+
+  const ErrorCallback = (error) => {
+    // Display error based on the error code.
+    const { code } = error;
+    switch (code) {
+      case GeolocationPositionError.TIMEOUT:
+        // Handle timeout.
+        alert(`Timeout`)
+        break;
+      case GeolocationPositionError.PERMISSION_DENIED:
+        // User denied the request.
+        alert(`Permission denied`)
+        break;
+      case GeolocationPositionError.POSITION_UNAVAILABLE:
+        // Position not available.
+        alert(`Unavailable`)
+        break;
+    }
+  }
+
+  const options = {
+    enableHighAccuracy: false,
+    timeout: 5000,
+    maximunAge: 0
+  };
+
   const showPosition = (position) => {
-    const latitude = position.coords.latitude;
-    const longitude = position.coords.longitude;
+    // console.log(position);
+    const { latitude, longitude, altitude, accuracy, heading, speed } = position.coords;
+
+    setReqCount(reqCount + 1);
 
     // ! Comienzo del monitoreo
     console.log(`recibiendo coordenadas...`);
@@ -31,7 +85,11 @@ export default function App() {
     if (coord.latitude === null || coord.longitude === null) {
       setCoord({
         latitude,
-        longitude
+        longitude,
+        altitude,
+        accuracy,
+        heading,
+        speed
       })
       console.log(`primer registro`);
       setDisplayText(`ingresando primer registro...`)
@@ -40,7 +98,11 @@ export default function App() {
       if (newCoords.latitude === null || newCoords.longitude === null) {
         setNewCoords({
           latitude,
-          longitude
+          longitude,
+          altitude,
+          accuracy,
+          heading,
+          speed
         })
         console.log(`segundo registro`);
         setDisplayText(`ingresando segundo registro...`)
@@ -48,7 +110,11 @@ export default function App() {
         // ? Nuevo registro (actualizacion del segundo registroy)
         setNewCoords({
           latitude,
-          longitude
+          longitude,
+          altitude,
+          accuracy,
+          heading,
+          speed
         })
 
         //  intercambio de coordenadas entre el primer y segundo registro
@@ -76,20 +142,21 @@ export default function App() {
   // Inicio del viaje 
   const handleStart = () => {
     setStartTrip(true);
-    getLocation();
+    watchPosition();
   }
 
   // ? se necesita el id del timer para poder deterlo en el handleStop
-  if (startTrip) {
-    const timerId = setTimeout(() => {
-      getLocation();
-    }, 3000);
-  }
+  // if (startTrip) {
+  //   const timerId = setTimeout(() => {
+  //     getLocation();
+  //   }, 3000);
+  // }
 
 
   // Termino del viaje
   const handleStop = () => {
     setStartTrip(false);
+    navigator.geolocation.clearWatch(watchID)
   }
 
   return (
@@ -105,15 +172,28 @@ export default function App() {
       {
         (!startTrip) ?
           <button onClick={handleStart}>Iniciar</button>
-        :
+          :
           <button onClick={handleStop}>Detener</button>
       }
 
       <h2>Primer Registro</h2>
-      <p>Latitude: {coord.latitude} </p>  <p>Longitude: {coord.longitude} </p>
+      <p>Latitude: {coord.latitude} </p>  
+      <p>Longitude: {coord.longitude} </p>
+      <p>Altitude: {coord.altitude} </p>
+      <p>Accuracy: {coord.accuracy} </p>
+      <p>Heading: {coord.heading} </p>
+      <p>Speed: {coord.speed} </p>
 
       <h2>Segundo Registro</h2>
-      <p>Latitude: {newCoords.latitude} </p>  <p>Longitude: {newCoords.longitude} </p>
+      <p>Latitude: {newCoords.latitude} </p> 
+      <p>Longitude: {newCoords.longitude} </p>
+      <p>Altitude: {newCoords.altitude} </p>
+      <p>Accuracy: {newCoords.accuracy} </p>
+      <p>Heading: {newCoords.heading} </p>
+      <p>Speed: {newCoords.speed} </p>
+
+
+      <h3>Request Count: {reqCount}</h3>
 
       <h3><b>{displayText.toUpperCase()}</b></h3>
 
