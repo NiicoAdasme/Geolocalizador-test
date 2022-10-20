@@ -1,5 +1,11 @@
 import { useEffect, useState } from 'react'
 import '../assets/App.css';
+// import { getAuth, signInAnonymously } from "firebase/auth";
+// import { messaging } from '../firebase';
+// import { getToken, onMessage } from 'firebase/messaging';
+
+// import { ToastContainer, toast } from 'react-toastify';
+// import "react-toastify/dist/ReactToastify.css"
 
 
 export default function App() {
@@ -20,18 +26,15 @@ export default function App() {
     accuracy: null,
     altitude: null,
     heading: null,
-    speed: null,
+    speed: 0,
     reqCount: null,
     timestamp: null
   })
-  // const [newCoords, setNewCoords] = useState({
-  //   latitude: null,
-  //   longitude: null,
-  //   accuracy: null,
-  //   altitude: null,
-  //   heading: null,
-  //   speed: null
-  // });
+
+  // const loguearse = () => {
+  //   signInAnonymously(getAuth()).then(usuario => console.log(usuario))
+  // }
+
 
   const getLocation = () => {
     if (navigator.geolocation) {
@@ -104,7 +107,7 @@ export default function App() {
       altitude,
       accuracy,
       heading,
-      speed: speedKmh,
+      speed,
       reqCount,
       timestamp: fullDate
     })
@@ -154,7 +157,7 @@ export default function App() {
       <p>Altura: {coord.altitude} </p>
       <p>Precisión: {coord.accuracy} </p>
       <p>Grado: {coord.heading} </p>
-      <p>Velocidad: {coord.speedKmh} km/h</p>
+      <p>Velocidad: {coord.speed} km/h</p>
 
       <iframe
         width="600"
