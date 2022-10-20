@@ -1,14 +1,40 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import '../assets/App.css';
+// import { getAuth, signInAnonymously } from "firebase/auth";
+// import { messaging } from '../firebase';
+// import { getToken, onMessage } from 'firebase/messaging';
+
+// import { ToastContainer, toast } from 'react-toastify';
+// import "react-toastify/dist/ReactToastify.css"
+
 
 export default function App() {
 
-  const [startTrip, setStartTrip] = useState(false)
+  const apiKey = import.meta.env.VITE_REACT_APP_API_KEY
 
-  const [displayText, setDisplayText] = useState('')
+  const [startTrip, setStartTrip] = useState(false);
 
-  const [coord, setCoord] = useState({ latitude: null, longitude: null })
-  const [newCoords, setNewCoords] = useState({ latitude: null, longitude: null });
+  const [watchID, setWatchID] = useState();
+
+  const [reqCount, setReqCount] = useState(0);
+
+  const [displayText, setDisplayText] = useState('');
+
+  const [coord, setCoord] = useState({
+    latitude: null,
+    longitude: null,
+    accuracy: null,
+    altitude: null,
+    heading: null,
+    speed: 0,
+    reqCount: null,
+    timestamp: null
+  })
+
+  // const loguearse = () => {
+  //   signInAnonymously(getAuth()).then(usuario => console.log(usuario))
+  // }
+
 
   const getLocation = () => {
     if (navigator.geolocation) {
@@ -18,67 +44,93 @@ export default function App() {
     }
   }
 
-  const showPosition = (position) => {
-    const latitude = position.coords.latitude;
-    const longitude = position.coords.longitude;
+  const watchPosition = () => {
+    if (navigator.geolocation) {
+      const watchId = navigator.geolocation.watchPosition(showPosition, ErrorCallback, options)
+      setWatchID(watchId);
+    } else {
+      alert(`Geolocation is not supported by this browser`); // ! You must activate the geolocation
+    }
+  }
 
-    // ! Comienzo del monitoreo
+  const ErrorCallback = (error) => {
+    // Display error based on the error code.
+    const { code } = error;
+    switch (code) {
+      case GeolocationPositionError.TIMEOUT:
+        // Handle timeout.
+        alert(`Timeout`)
+        break;
+      case GeolocationPositionError.PERMISSION_DENIED:
+        // User denied the request.
+        alert(`Permission denied`)
+        break;
+      case GeolocationPositionError.POSITION_UNAVAILABLE:
+        // Position not available.
+        alert(`Unavailable`)
+        break;
+    }
+  }
+
+  const options = {
+    enableHighAccuracy: true,
+    timeout: 5000,
+    maximunAge: 0
+  };
+
+  useEffect(() => {
+    setReqCount(reqCount + 1);
+  }, [coord])
+  
+
+  const showPosition = (position) => {
+
+    const { latitude, longitude, altitude, accuracy, heading, speed } = position.coords;
+
+    const speedKmh = speed * 3.6;
+
+    const dateNow = new Date();
+    const year = dateNow.getFullYear();
+    const month = dateNow.getMonth()+1;
+    const day = dateNow.getDate();
+    const hours = dateNow.getHours();
+    const minutes = dateNow.getMinutes();
+    const seconds = dateNow.getSeconds();
+
+    const fullDate = `${day}/${month}/${year} | ${hours}:${minutes}:${seconds}`
+
     console.log(`recibiendo coordenadas...`);
     setDisplayText(`recibiendo coordenadas...`)
+    setCoord({
+      latitude,
+      longitude,
+      altitude,
+      accuracy,
+      heading,
+      speed: speedKmh,
+      reqCount,
+      timestamp: fullDate
+    })
 
-    // * Primer registro de coordenadas, por primera vez
-    if (coord.latitude === null || coord.longitude === null) {
-      setCoord({
-        latitude,
-        longitude
-      })
-      console.log(`primer registro`);
-      setDisplayText(`ingresando primer registro...`)
+    if (speed === 0) {
+      setDisplayText(`Detenido`)
     } else {
-      // * segundo registro, por primera vez
-      if (newCoords.latitude === null || newCoords.longitude === null) {
-        setNewCoords({
-          latitude,
-          longitude
-        })
-        console.log(`segundo registro`);
-        setDisplayText(`ingresando segundo registro...`)
-      } else {
-        // ? Nuevo registro (actualizacion del segundo registroy)
-        setNewCoords({
-          latitude,
-          longitude
-        })
-
-        //  intercambio de coordenadas entre el primer y segundo registro
-        //  Si las coordenadas son iguales. No hay movimiento
-        if (coord.latitude === newCoords.latitude && coord.longitude === newCoords.longitude) {
-          console.log('quieto');
-          setDisplayText(`quieto :(`)
-          // si esta quieto. hay que saber cuanto tiempo lleva detenido. Si lleva mas de 1 min detenido
-          // se envia una alerta para saber si esta bien el conductor
-          // Algun mecanismo de validacion rapido para identificar que es el conductor y no otra persona 
-          setCoord(newCoords)
-        } else {
-          console.log('en movimiento');
-          setDisplayText(`en movimiento :D`)
-          // intercambio de coordenadas entre el primer y segundo registro
-          setCoord(newCoords)
-        }
-      }
+      setDisplayText(`En movimiento`)
     }
-    // ! Fin del monitoreo
+
   }
 
+
+  // Inicio del viaje 
   const handleStart = () => {
     setStartTrip(true);
-    getLocation();
+    watchPosition();
   }
 
-  if (startTrip) {
-    setTimeout(() => {
-      getLocation()
-    }, 3000);
+  // Termino del viaje
+  const handleStop = () => {
+    setStartTrip(false);
+    navigator.geolocation.clearWatch(watchID)
   }
 
   return (
@@ -89,23 +141,42 @@ export default function App() {
         </a>
       </div>
 
-      <h1>Geolocation API</h1>
+      <h1>Geolocalización API</h1>
 
-      <button
-        onClick={handleStart}
-      >
-        Iniciar
-      </button>
+      {
+        (!startTrip) ?
+          <button onClick={handleStart}>Iniciar</button>
+          :
+          <button onClick={handleStop}>Detener</button>
+      }
 
       <h2>Primer Registro</h2>
-      <p>Latitude: {coord.latitude} </p>  <p>Longitude: {coord.longitude} </p>
+      <p>Hora: {coord.timestamp} </p>
+      <p>Latitud: {coord.latitude} </p>
+      <p>Longitud: {coord.longitude} </p>
+      <p>Altura: {coord.altitude} </p>
+      <p>Precisión: {coord.accuracy} </p>
+      <p>Grado: {coord.heading} </p>
+      <p>Velocidad: {coord.speed} km/h</p>
 
-      <h2>Segundo Registro</h2>
-      <p>Latitude: {newCoords.latitude} </p>  <p>Longitude: {newCoords.longitude} </p>
+      <iframe
+        width="600"
+        height="450"
+        allow="geolocation"
+        frameBorder="0"
+        style={{ border: 0 }}
+        loading="lazy"
+        allowFullScreen=""
+        referrerPolicy="no-referrer-when-downgrade"
+        src={`https://www.google.com/maps/embed/v1/place?key=${apiKey}
+          &q=${coord.latitude},${coord.longitude}`}>
+      </iframe>
 
       <h3><b>{displayText.toUpperCase()}</b></h3>
 
-    </div>
+      <h3>Request Count: {reqCount}</h3>
+
+    </div >
   )
 }
 
