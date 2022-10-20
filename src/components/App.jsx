@@ -4,6 +4,8 @@ import '../assets/App.css';
 
 export default function App() {
 
+  const apiKey = import.meta.env.VITE_REACT_APP_API_KEY
+
   const [startTrip, setStartTrip] = useState(false);
 
   const [watchID, setWatchID] = useState();
@@ -177,27 +179,50 @@ export default function App() {
       }
 
       <h2>Primer Registro</h2>
-      <p>Latitude: {coord.latitude} </p>  
+      <p>Latitude: {coord.latitude} </p>
       <p>Longitude: {coord.longitude} </p>
       <p>Altitude: {coord.altitude} </p>
       <p>Accuracy: {coord.accuracy} </p>
       <p>Heading: {coord.heading} </p>
       <p>Speed: {coord.speed} </p>
 
+      <iframe
+        width="300"
+        height="200"
+        frameBorder="0"
+        style={{border:0}}
+        loading="lazy"
+        allowFullscreen=""
+        referrerPolicy="no-referrer-when-downgrade"
+        src={`https://www.google.com/maps/embed/v1/place?key=${apiKey}
+          &q=${coord.latitude},${coord.longitude}`}>
+      </iframe>
+
       <h2>Segundo Registro</h2>
-      <p>Latitude: {newCoords.latitude} </p> 
+      <p>Latitude: {newCoords.latitude} </p>
       <p>Longitude: {newCoords.longitude} </p>
       <p>Altitude: {newCoords.altitude} </p>
       <p>Accuracy: {newCoords.accuracy} </p>
       <p>Heading: {newCoords.heading} </p>
       <p>Speed: {newCoords.speed} </p>
 
-
-      <h3>Request Count: {reqCount}</h3>
+      <iframe
+        width="300"
+        height="200"
+        frameBorder="0"
+        style={{border:0}}
+        loading="lazy"
+        allowFullscreen=""
+        referrerPolicy="no-referrer-when-downgrade"
+        src={`https://www.google.com/maps/embed/v1/place?key=${apiKey}
+          &q=${newCoords.latitude},${newCoords.longitude}`}>
+      </iframe>
 
       <h3><b>{displayText.toUpperCase()}</b></h3>
 
-    </div>
+      <h3>Request Count: {reqCount}</h3>
+      
+    </div >
   )
 }
 
