@@ -91,7 +91,7 @@ export default function App() {
     })
     setDisplayText(`recibiendo coordenadas...`)
 
-    if(speed < 0){
+    if(speed === 0){
       setDisplayText(`Detenido`)
     }else{
       setDisplayText(`En movimiento`)
@@ -183,7 +183,7 @@ export default function App() {
         </a>
       </div>
 
-      <h1>Geolocation API</h1>
+      <h1>Geolocalización API</h1>
 
       {
         (!startTrip) ?
@@ -193,12 +193,12 @@ export default function App() {
       }
 
       <h2>Primer Registro</h2>
-      <p>Latitude: {coord.latitude} </p>
-      <p>Longitude: {coord.longitude} </p>
-      <p>Altitude: {coord.altitude} </p>
-      <p>Accuracy: {coord.accuracy} </p>
-      <p>Heading: {coord.heading} </p>
-      <p>Speed: {coord.speed} </p>
+      <p>Latitud: {coord.latitude} </p>
+      <p>Longitud: {coord.longitude} </p>
+      <p>Altuea: {coord.altitude} </p>
+      <p>Precision: {coord.accuracy} </p>
+      <p>Grado: {coord.heading} </p>
+      <p>Velocidad: {coord.speed} </p>
 
       <iframe
         width="600"
