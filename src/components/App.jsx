@@ -22,14 +22,14 @@ export default function App() {
     heading: null,
     speed: null
   })
-  const [newCoords, setNewCoords] = useState({
-    latitude: null,
-    longitude: null,
-    accuracy: null,
-    altitude: null,
-    heading: null,
-    speed: null
-  });
+  // const [newCoords, setNewCoords] = useState({
+  //   latitude: null,
+  //   longitude: null,
+  //   accuracy: null,
+  //   altitude: null,
+  //   heading: null,
+  //   speed: null
+  // });
 
   const getLocation = () => {
     if (navigator.geolocation) {
@@ -81,62 +81,76 @@ export default function App() {
 
     // ! Comienzo del monitoreo
     console.log(`recibiendo coordenadas...`);
+    setCoord({
+      latitude,
+      longitude,
+      altitude,
+      accuracy,
+      heading,
+      speed
+    })
     setDisplayText(`recibiendo coordenadas...`)
 
-    // * Primer registro de coordenadas, por primera vez
-    if (coord.latitude === null || coord.longitude === null) {
-      setCoord({
-        latitude,
-        longitude,
-        altitude,
-        accuracy,
-        heading,
-        speed
-      })
-      console.log(`primer registro`);
-      setDisplayText(`ingresando primer registro...`)
-    } else {
-      // * segundo registro, por primera vez
-      if (newCoords.latitude === null || newCoords.longitude === null) {
-        setNewCoords({
-          latitude,
-          longitude,
-          altitude,
-          accuracy,
-          heading,
-          speed
-        })
-        console.log(`segundo registro`);
-        setDisplayText(`ingresando segundo registro...`)
-      } else {
-        // ? Nuevo registro (actualizacion del segundo registroy)
-        setNewCoords({
-          latitude,
-          longitude,
-          altitude,
-          accuracy,
-          heading,
-          speed
-        })
-
-        //  intercambio de coordenadas entre el primer y segundo registro
-        //  Si las coordenadas son iguales. No hay movimiento
-        if (coord.latitude === newCoords.latitude && coord.longitude === newCoords.longitude) {
-          console.log('quieto');
-          setDisplayText(`quieto :(`)
-          // si esta quieto. hay que saber cuanto tiempo lleva detenido. Si lleva mas de 1 min detenido
-          // se envia una alerta para saber si esta bien el conductor
-          // Algun mecanismo de validacion rapido para identificar que es el conductor y no otra persona 
-          setCoord(newCoords)
-
-        } else {
-          console.log('en movimiento');
-          setDisplayText(`en movimiento :D`)
-          // intercambio de coordenadas entre el primer y segundo registro
-          setCoord(newCoords)
-        }
-      }
+    if(speed < 0){
+      setDisplayText(`Detenido`)
+    }else{
+      setDisplayText(`En movimiento`)
     }
+
+    // * Primer registro de coordenadas, por primera vez
+    // if (coord.latitude === null || coord.longitude === null) {
+    //   setCoord({
+    //     latitude,
+    //     longitude,
+    //     altitude,
+    //     accuracy,
+    //     heading,
+    //     speed
+    //   })
+    //   console.log(`primer registro`);
+    //   setDisplayText(`ingresando primer registro...`)
+    // } else {
+    //   // * segundo registro, por primera vez
+    //   if (newCoords.latitude === null || newCoords.longitude === null) {
+    //     setNewCoords({
+    //       latitude,
+    //       longitude,
+    //       altitude,
+    //       accuracy,
+    //       heading,
+    //       speed
+    //     })
+    //     console.log(`segundo registro`);
+    //     setDisplayText(`ingresando segundo registro...`)
+    //   } else {
+    //     // ? Nuevo registro (actualizacion del segundo registroy)
+    //     setNewCoords({
+    //       latitude,
+    //       longitude,
+    //       altitude,
+    //       accuracy,
+    //       heading,
+    //       speed
+    //     })
+
+    //     //  intercambio de coordenadas entre el primer y segundo registro
+    //     //  Si las coordenadas son iguales. No hay movimiento
+    //     if (coord.latitude === newCoords.latitude && coord.longitude === newCoords.longitude) {
+    //       console.log('quieto');
+    //       setDisplayText(`quieto :(`)
+    //       // si esta quieto. hay que saber cuanto tiempo lleva detenido. Si lleva mas de 1 min detenido
+    //       // se envia una alerta para saber si esta bien el conductor
+    //       // Algun mecanismo de validacion rapido para identificar que es el conductor y no otra persona 
+    //       setCoord(newCoords)
+
+    //     } else {
+    //       console.log('en movimiento');
+    //       setDisplayText(`en movimiento :D`)
+    //       // intercambio de coordenadas entre el primer y segundo registro
+    //       setCoord(newCoords)
+    //     }
+    //   }
+    // }
     // ! Fin del monitoreo
   }
 
@@ -187,18 +201,18 @@ export default function App() {
       <p>Speed: {coord.speed} </p>
 
       <iframe
-        width="300"
-        height="200"
+        width="600"
+        height="450"
         frameBorder="0"
         style={{border:0}}
         loading="lazy"
-        allowFullscreen=""
+        allowFullScreen=""
         referrerPolicy="no-referrer-when-downgrade"
         src={`https://www.google.com/maps/embed/v1/place?key=${apiKey}
           &q=${coord.latitude},${coord.longitude}`}>
       </iframe>
 
-      <h2>Segundo Registro</h2>
+      {/* <h2>Segundo Registro</h2>
       <p>Latitude: {newCoords.latitude} </p>
       <p>Longitude: {newCoords.longitude} </p>
       <p>Altitude: {newCoords.altitude} </p>
@@ -216,9 +230,9 @@ export default function App() {
         referrerPolicy="no-referrer-when-downgrade"
         src={`https://www.google.com/maps/embed/v1/place?key=${apiKey}
           &q=${newCoords.latitude},${newCoords.longitude}`}>
-      </iframe>
+      </iframe> */}
 
-      <h3><b>{displayText.toUpperCase()}</b></h3>
+      {/* <h3><b>{displayText.toUpperCase()}</b></h3> */}
 
       <h3>Request Count: {reqCount}</h3>
       
