@@ -205,6 +205,7 @@ export default function App() {
       <iframe
         width="600"
         height="450"
+        allow="geolocation"
         frameBorder="0"
         style={{border:0}}
         loading="lazy"
