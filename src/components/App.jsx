@@ -84,6 +84,8 @@ export default function App() {
 
     const { latitude, longitude, altitude, accuracy, heading, speed } = position.coords;
 
+    const speedKmh = speed * 3.6;
+
     const dateNow = new Date();
     const year = dateNow.getFullYear();
     const month = dateNow.getMonth()+1;
@@ -102,7 +104,7 @@ export default function App() {
       altitude,
       accuracy,
       heading,
-      speed,
+      speed: speedKmh,
       reqCount,
       timestamp: fullDate
     })
@@ -152,7 +154,7 @@ export default function App() {
       <p>Altura: {coord.altitude} </p>
       <p>Precisión: {coord.accuracy} </p>
       <p>Grado: {coord.heading} </p>
-      <p>Velocidad: {coord.speed} </p>
+      <p>Velocidad: {coord.speedKmh} km/h</p>
 
       <iframe
         width="600"
