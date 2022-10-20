@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import '../assets/App.css';
-// import { getAuth, signInAnonymously } from "firebase/auth";
-// import { messaging } from '../firebase';
-// import { getToken, onMessage } from 'firebase/messaging';
+import { getAuth, signInAnonymously } from "firebase/auth";
+import { messaging } from '../firebase';
+import { getToken, onMessage } from 'firebase/messaging';
 
-// import { ToastContainer, toast } from 'react-toastify';
-// import "react-toastify/dist/ReactToastify.css"
+import { ToastContainer, toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css"
 
 
 export default function App() {
@@ -31,10 +31,19 @@ export default function App() {
     timestamp: null
   })
 
-  // const loguearse = () => {
-  //   signInAnonymously(getAuth()).then(usuario => console.log(usuario))
-  // }
+  const loguearse = () => {
+    signInAnonymously(getAuth()).then(usuario => console.log(usuario))
+  }
 
+  const activarMensajes = async () => {
+    const token = await getToken(messaging, {
+      vapidKey: "BDcIaPcny0JGbEL0pq6OY4HIRMhiERhZ1NCT28qhntsyn9KdjU6yL3jVQsLdz9TM3xX6so_ET5KMj6z8QJ7UHhY"
+    }).catch(e => console.error(`Error al generar el token :( ${e}`))
+
+    if(token) console.log(`tu token es: ${token}`);
+    if(!token) console.error(`no tienes token`);
+
+  }
 
   const getLocation = () => {
     if (navigator.geolocation) {
@@ -80,8 +89,12 @@ export default function App() {
 
   useEffect(() => {
     setReqCount(reqCount + 1);
+    onMessage(messaging, message => {
+      console.log(`tu mensaje: ${message}`);
+      toast(message.notification.title)
+    })
   }, [coord])
-  
+
 
   const showPosition = (position) => {
 
@@ -91,7 +104,7 @@ export default function App() {
 
     const dateNow = new Date();
     const year = dateNow.getFullYear();
-    const month = dateNow.getMonth()+1;
+    const month = dateNow.getMonth() + 1;
     const day = dateNow.getDate();
     const hours = dateNow.getHours();
     const minutes = dateNow.getMinutes();
@@ -135,6 +148,7 @@ export default function App() {
 
   return (
     <div className="App">
+      <ToastContainer />
       <div>
         <a href="https://vitejs.dev" target="_blank">
           <img src="vite.svg" className="logo" alt="Vite logo" />
@@ -149,6 +163,10 @@ export default function App() {
           :
           <button onClick={handleStop}>Detener</button>
       }
+      <br />
+      <button onClick={loguearse}>Loguearse</button>
+      <br />
+      <button onClick={activarMensajes}>Obtener token</button>
 
       <h2>Primer Registro</h2>
       <p>Hora: {coord.timestamp} </p>
