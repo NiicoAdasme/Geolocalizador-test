@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import '../assets/App.css';
 
 
@@ -21,7 +21,8 @@ export default function App() {
     altitude: null,
     heading: null,
     speed: null,
-    reqCount: null
+    reqCount: null,
+    timestamp: null
   })
   // const [newCoords, setNewCoords] = useState({
   //   latitude: null,
@@ -69,18 +70,30 @@ export default function App() {
   }
 
   const options = {
-    enableHighAccuracy: false,
+    enableHighAccuracy: true,
     timeout: 5000,
     maximunAge: 0
   };
 
+  useEffect(() => {
+    setReqCount(reqCount + 1);
+  }, [coord])
+  
+
   const showPosition = (position) => {
-    // console.log(position);
+
     const { latitude, longitude, altitude, accuracy, heading, speed } = position.coords;
 
-    setReqCount(reqCount + 1);
+    const dateNow = new Date();
+    const year = dateNow.getFullYear();
+    const month = dateNow.getMonth()+1;
+    const day = dateNow.getDate();
+    const hours = dateNow.getHours();
+    const minutes = dateNow.getMinutes();
+    const seconds = dateNow.getSeconds();
 
-    // ! Comienzo del monitoreo
+    const fullDate = `${day}/${month}/${year} | ${hours}:${minutes}:${seconds}`
+
     console.log(`recibiendo coordenadas...`);
     setDisplayText(`recibiendo coordenadas...`)
     setCoord({
@@ -90,70 +103,16 @@ export default function App() {
       accuracy,
       heading,
       speed,
-      reqCount
+      reqCount,
+      timestamp: fullDate
     })
 
-    if(speed === 0){
+    if (speed === 0) {
       setDisplayText(`Detenido`)
-    }else{
+    } else {
       setDisplayText(`En movimiento`)
     }
 
-    // * Primer registro de coordenadas, por primera vez
-    // if (coord.latitude === null || coord.longitude === null) {
-    //   setCoord({
-    //     latitude,
-    //     longitude,
-    //     altitude,
-    //     accuracy,
-    //     heading,
-    //     speed
-    //   })
-    //   console.log(`primer registro`);
-    //   setDisplayText(`ingresando primer registro...`)
-    // } else {
-    //   // * segundo registro, por primera vez
-    //   if (newCoords.latitude === null || newCoords.longitude === null) {
-    //     setNewCoords({
-    //       latitude,
-    //       longitude,
-    //       altitude,
-    //       accuracy,
-    //       heading,
-    //       speed
-    //     })
-    //     console.log(`segundo registro`);
-    //     setDisplayText(`ingresando segundo registro...`)
-    //   } else {
-    //     // ? Nuevo registro (actualizacion del segundo registroy)
-    //     setNewCoords({
-    //       latitude,
-    //       longitude,
-    //       altitude,
-    //       accuracy,
-    //       heading,
-    //       speed
-    //     })
-
-    //     //  intercambio de coordenadas entre el primer y segundo registro
-    //     //  Si las coordenadas son iguales. No hay movimiento
-    //     if (coord.latitude === newCoords.latitude && coord.longitude === newCoords.longitude) {
-    //       console.log('quieto');
-    //       setDisplayText(`quieto :(`)
-    //       // si esta quieto. hay que saber cuanto tiempo lleva detenido. Si lleva mas de 1 min detenido
-    //       // se envia una alerta para saber si esta bien el conductor
-    //       // Algun mecanismo de validacion rapido para identificar que es el conductor y no otra persona 
-    //       setCoord(newCoords)
-
-    //     } else {
-    //       console.log('en movimiento');
-    //       setDisplayText(`en movimiento :D`)
-    //       // intercambio de coordenadas entre el primer y segundo registro
-    //       setCoord(newCoords)
-    //     }
-    //   }
-    // }
-    // ! Fin del monitoreo
   }
 
 
@@ -162,14 +121,6 @@ export default function App() {
     setStartTrip(true);
     watchPosition();
   }
-
-  // ? se necesita el id del timer para poder deterlo en el handleStop
-  // if (startTrip) {
-  //   const timerId = setTimeout(() => {
-  //     getLocation();
-  //   }, 3000);
-  // }
-
 
   // Termino del viaje
   const handleStop = () => {
@@ -195,6 +146,7 @@ export default function App() {
       }
 
       <h2>Primer Registro</h2>
+      <p>Hora: {coord.timestamp} </p>
       <p>Latitud: {coord.latitude} </p>
       <p>Longitud: {coord.longitude} </p>
       <p>Altura: {coord.altitude} </p>
@@ -207,7 +159,7 @@ export default function App() {
         height="450"
         allow="geolocation"
         frameBorder="0"
-        style={{border:0}}
+        style={{ border: 0 }}
         loading="lazy"
         allowFullScreen=""
         referrerPolicy="no-referrer-when-downgrade"
@@ -215,30 +167,10 @@ export default function App() {
           &q=${coord.latitude},${coord.longitude}`}>
       </iframe>
 
-      {/* <h2>Segundo Registro</h2>
-      <p>Latitude: {newCoords.latitude} </p>
-      <p>Longitude: {newCoords.longitude} </p>
-      <p>Altitude: {newCoords.altitude} </p>
-      <p>Accuracy: {newCoords.accuracy} </p>
-      <p>Heading: {newCoords.heading} </p>
-      <p>Speed: {newCoords.speed} </p>
-
-      <iframe
-        width="300"
-        height="200"
-        frameBorder="0"
-        style={{border:0}}
-        loading="lazy"
-        allowFullscreen=""
-        referrerPolicy="no-referrer-when-downgrade"
-        src={`https://www.google.com/maps/embed/v1/place?key=${apiKey}
-          &q=${newCoords.latitude},${newCoords.longitude}`}>
-      </iframe> */}
-
       <h3><b>{displayText.toUpperCase()}</b></h3>
 
       <h3>Request Count: {reqCount}</h3>
-      
+
     </div >
   )
 }
