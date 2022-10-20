@@ -107,7 +107,7 @@ export default function App() {
       altitude,
       accuracy,
       heading,
-      speed,
+      speed: speedKmh,
       reqCount,
       timestamp: fullDate
     })
