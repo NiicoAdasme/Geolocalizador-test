@@ -20,7 +20,8 @@ export default function App() {
     accuracy: null,
     altitude: null,
     heading: null,
-    speed: null
+    speed: null,
+    reqCount: null
   })
   // const [newCoords, setNewCoords] = useState({
   //   latitude: null,
@@ -81,15 +82,16 @@ export default function App() {
 
     // ! Comienzo del monitoreo
     console.log(`recibiendo coordenadas...`);
+    setDisplayText(`recibiendo coordenadas...`)
     setCoord({
       latitude,
       longitude,
       altitude,
       accuracy,
       heading,
-      speed
+      speed,
+      reqCount
     })
-    setDisplayText(`recibiendo coordenadas...`)
 
     if(speed === 0){
       setDisplayText(`Detenido`)
@@ -195,8 +197,8 @@ export default function App() {
       <h2>Primer Registro</h2>
       <p>Latitud: {coord.latitude} </p>
       <p>Longitud: {coord.longitude} </p>
-      <p>Altuea: {coord.altitude} </p>
-      <p>Precision: {coord.accuracy} </p>
+      <p>Altura: {coord.altitude} </p>
+      <p>Precisión: {coord.accuracy} </p>
       <p>Grado: {coord.heading} </p>
       <p>Velocidad: {coord.speed} </p>
 
@@ -232,7 +234,7 @@ export default function App() {
           &q=${newCoords.latitude},${newCoords.longitude}`}>
       </iframe> */}
 
-      {/* <h3><b>{displayText.toUpperCase()}</b></h3> */}
+      <h3><b>{displayText.toUpperCase()}</b></h3>
 
       <h3>Request Count: {reqCount}</h3>
       
