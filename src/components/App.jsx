@@ -12,6 +12,8 @@ export default function App() {
 
   const apiKey = import.meta.env.VITE_REACT_APP_API_KEY
 
+  const [token, setToken] = useState();
+
   const [startTrip, setStartTrip] = useState(false);
 
   const [watchID, setWatchID] = useState();
@@ -41,6 +43,7 @@ export default function App() {
     }).catch(e => console.error(`Error al generar el token :( ${e}`))
 
     if(token) console.log(`tu token es: ${token}`);
+    setToken(token);
     if(!token) console.error(`no tienes token`);
 
   }
@@ -90,7 +93,7 @@ export default function App() {
   useEffect(() => {
     setReqCount(reqCount + 1);
     onMessage(messaging, message => {
-      console.log(`tu mensaje: ${message}`);
+      console.log(`tu mensaje:`, message);
       toast(message.notification.title)
     })
   }, [coord])
@@ -193,6 +196,8 @@ export default function App() {
       <h3><b>{displayText.toUpperCase()}</b></h3>
 
       <h3>Request Count: {reqCount}</h3>
+
+      <h3>Tu token es: {token} </h3>
 
     </div >
   )
