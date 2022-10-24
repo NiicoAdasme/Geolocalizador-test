@@ -213,9 +213,9 @@ export default function App() {
 
       <h3>Request Count: {reqCount}</h3>
 
-      <h3>Tu token es: {token} </h3>
-
       <h3>uid: {uid}</h3>
+
+      <h3>Tu token es: {token} </h3>
 
     </div >
   )
