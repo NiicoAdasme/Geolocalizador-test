@@ -101,7 +101,7 @@ export default function App() {
       console.log(`tu mensaje:`, message);
       toast(message.notification.title)
     })
-  }, [coord])
+  }, [coord, messaging])
 
 
   const showPosition = (position) => {
@@ -156,7 +156,18 @@ export default function App() {
 
   return (
     <div className="App">
-      <ToastContainer />
+      <ToastContainer 
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
       <div>
         <a href="https://vitejs.dev" target="_blank">
           <img src="vite.svg" className="logo" alt="Vite logo" />
@@ -202,9 +213,9 @@ export default function App() {
 
       <h3>Request Count: {reqCount}</h3>
 
-      <h3>Tu token es: {token} </h3>
-
       <h3>uid: {uid}</h3>
+
+      <h3>Tu token es: {token} </h3>
 
     </div >
   )
