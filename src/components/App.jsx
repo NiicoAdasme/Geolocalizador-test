@@ -14,6 +14,8 @@ export default function App() {
 
   const [token, setToken] = useState();
 
+  const [uid, setUid] = useState();
+
   const [startTrip, setStartTrip] = useState(false);
 
   const [watchID, setWatchID] = useState();
@@ -34,7 +36,10 @@ export default function App() {
   })
 
   const loguearse = () => {
-    signInAnonymously(getAuth()).then(usuario => console.log(usuario))
+    signInAnonymously(getAuth()).then(usuario => {
+      console.log(usuario.user.uid)
+      setUid(usuario.user.uid)
+    })
   }
 
   const activarMensajes = async () => {
@@ -198,6 +203,8 @@ export default function App() {
       <h3>Request Count: {reqCount}</h3>
 
       <h3>Tu token es: {token} </h3>
+
+      <h3>uid: {uid}</h3>
 
     </div >
   )
